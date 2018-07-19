@@ -27,44 +27,41 @@ versions = [
 
 // define max index in versionOptions array
 const maxLengthVersion = versions
-.reduce((acc, currentValue) => {
- const length = currentValue.split('.').length
- if(length > acc) return length
-  else return acc
-}, 0)
+  .reduce((acc, currentValue) => {
+    const length = currentValue.split('.').length
+    if (length > acc) return length
+    else return acc
+  }, 0)
 
 // for version type like '1.1.2' will return [100, 10, 1]
 const versionOptions = Array
-.from(new Array(maxLengthVersion),(val,idx) => idx)
-.map((item, idx) => Math.pow(10,maxLengthVersion - idx))
+  .from(new Array(maxLengthVersion), (val, idx) => idx)
+  .map((item, idx) => Math.pow(10, maxLengthVersion - idx))
 
 // processes version as string to version as a number
 // one to one correspondence
 const max = (str) => {
-return str
- .split('.')
-  .reduce((acc, currentValue, currentIndex) => {
-   return acc + currentValue * versionOptions[currentIndex]
-}, 0)
+  return str
+    .split('.')
+    .reduce((acc, currentValue, currentIndex) => {
+      return acc + currentValue * versionOptions[currentIndex]
+    }, 0)
 }
 
 
-function getVersion( ver ) {
+function getVersion(ver) {
+  const size = ver.length
 
-const size = ver.length
+  let verFiltered = versions
+    .filter(version => version.substring(0, size) === ver)
 
-let verFiltered = versions
-  .filter(version => version.substring(0, size) === ver)
+  const verProcessed = verFiltered.map(version => max(version))
 
-const verProcessed = verFiltered.map(version => max(version))
+  const indexOfMax =
+    verProcessed.indexOf(Math.max.apply(Math, verProcessed))
 
-
-const indexOfMax =
-  verProcessed.indexOf(Math.max.apply(Math,verProcessed))
-
-//  console.log(`${ver} // => ${verFiltered[indexOfMax]}`)
- return verFiltered[indexOfMax] || ''
-
+  //  console.log(`${ver} // => ${verFiltered[indexOfMax]}`)
+  return verFiltered[indexOfMax] || ''
 }
 
 module.exports = getVersion;
